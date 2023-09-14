@@ -85,4 +85,4 @@ This will completely remove MicroK8s and all associated data from your system.
 
 Conclusion
 
-You have now successfully installed MicroK8s on your Linux-based system, configured the kubectl alias, and set up the Kubernetes configuration. You can begin using it for local Kubernetes development and testing. You can explore more features and add-ons by referring to the MicroK8s documentation: MicroK8s Documentation.
+You have now successfully installed MicroK8s on your Linux-based system, configured the kubectl alias, and set up the Kubernetes configuration. You can begin using it for local Kubernetes development and testing. You can explore more features and add-ons by referring to the MicroK8s documentation: [MicroK8s Documentation](https://microk8s.io/docs/getting-started).
