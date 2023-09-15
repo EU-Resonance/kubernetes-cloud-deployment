@@ -1,0 +1,14 @@
+# See `argocd.webapp` field in `custom-urls.yaml`.
+#
+source:
+  kind: ConfigMap
+  name: custom-urls
+  fieldPath: data.[argocd.webapp]
+targets:
+- select:
+    kind: ConfigMap
+    name: argocd-cm
+    namespace: argocd
+  fieldPaths:
+  - data.url
+

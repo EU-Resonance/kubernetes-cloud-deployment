@@ -1,0 +1,11 @@
+source:
+  kind: ConfigMap
+  name: custom-urls
+  fieldPath: data.[argocd.repo]
+targets:
+- select:
+    kind: Application
+    namespace: argocd
+  fieldPaths:
+  - spec.source.repoURL
+

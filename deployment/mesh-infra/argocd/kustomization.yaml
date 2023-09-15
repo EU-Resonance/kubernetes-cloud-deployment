@@ -8,7 +8,7 @@ resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.4/manifests/install.yaml
 - projects
 
-patchesStrategicMerge:
+patches:
 - argocd-cm.yaml
 - argocd-cmd-params-cm.yaml
 - argocd-rbac-cm.yaml
