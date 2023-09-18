@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
 data:
-  policy.csv: |
+  policy.csv:
     g, ArgoCDAdmins, role:admin
 
 # NOTE
