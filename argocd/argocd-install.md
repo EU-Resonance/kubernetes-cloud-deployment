@@ -20,7 +20,7 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 2. Accessing the ArgoCD Web UI
-ArgoCD provides a web-based user interface. To access it, you need to expose the ArgoCD server as a service with a LoadBalancer or NodePort. For example, to expose it via a NodePort, you can use the following command:
+ArgoCD provides a web-based user interface. To access it, you need to expose the ArgoCD server as a service with a LoadBalancer or NodePort. For example, to expose it via a NodePokustomize.yamlrt, you can use the following command:
 
 ```
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
@@ -48,7 +48,7 @@ spec:
   source:
     repoURL: https://github.com/yourusername/your-app-repo.git
     targetRevision: HEAD
-    path: .
+    path: .kustomize.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
@@ -78,3 +78,8 @@ kubectl delete namespace argocd
 Conclusion
 
 You have now successfully installed ArgoCD and deployed an application using GitOps principles. You can explore more features and options in the ArgoCD documentation: ArgoCD Documentation.
+
+Note if you are portforwarding and have issues accessing the user interface try running this command:
+```
+kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 8080:443
+``
