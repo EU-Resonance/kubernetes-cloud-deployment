@@ -1,7 +1,0 @@
-- op: replace
-  path: /metadata/name
-  value: routing
-- op: replace
-  path: /spec/source/path
-  value: deployment/mesh-infra/routing
-

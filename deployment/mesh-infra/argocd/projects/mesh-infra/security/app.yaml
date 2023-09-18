@@ -1,7 +1,0 @@
-- op: replace
-  path: /metadata/name
-  value: security
-- op: replace
-  path: /spec/source/path
-  value: deployment/mesh-infra/security
-
