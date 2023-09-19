@@ -53,7 +53,5 @@ $ microk8s kubectl label namespace default istio-injection=enabled
 Then build the cluster
 
 ```bash
-$ micr0k8s kustomize build \
-    https://github.com/c0c0n3/kitt4sme.live/deployment/mesh-infra/argocd | \
-    kubectl apply -f -
+$ microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
