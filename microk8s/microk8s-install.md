@@ -26,6 +26,8 @@ Once Snapd is installed, you can easily install MicroK8s by running the followin
 
 ```
 sudo snap install microk8s --classic
+sudo usermod -a -G microk8s $(whoami)
+newgrp microk8s
 ```
 This command will download and install MicroK8s on your system.
 
