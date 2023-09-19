@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  # The URL where the ArgoCD API server can be accessed.
+  # Change this to the external URL of your ArgoCD server.
+  server: https://cloud.ouludatalab.fi/argocd
+
+  # The URL where the ArgoCD repo server can be accessed.
+  # Change this to the URL of your Git repository hosting your application manifests.
+  repoServer: https://cloud.ouludatalab.fi
+
+  # The URL where the ArgoCD repository can be accessed.
+  # This URL should match the repository URL in your application manifests.
+  repository: https://github.com/Advanced-Dataspaces-VTT/kubernetes-cloud-deployment.git
+
+  # The path within the Git repository where the application manifests are stored.
+  repository.resync:
+    enabled: true
+    # Set the frequency of Git repository sync in seconds.
+    # Adjust as needed (e.g., 300 for every 5 minutes).
+    period: 180
+
+  # Secret name containing the SSH private key for Git repository access.
+  # Create this secret separately and reference it here.
+  repository.credentials: argocd-repo-ssh-key
+
+  # Set the desired namespace for the ArgoCD Application resources.
+  # This is the namespace where your applications will be deployed.
+  application.instanceLabelKey: "app.kubernetes.io/instance"
+
+  # Enable or disable automatic sync of applications.
+  # Set to "true" to enable auto-sync, "false" to disable.
+  application.autoSync: "true"
+
+  # The default destination cluster for applications.
+  # This should match one of your Kubernetes clusters.
+  cluster.configured: "true"
+  cluster.name: "Oulu Datalab Cluster"
+

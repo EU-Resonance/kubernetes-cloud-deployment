@@ -14,3 +14,4 @@ patchesStrategicMerge:
 - argocd-rbac-cm.yaml
 - argocd-secret.yaml
 - argocd-server.yaml
+

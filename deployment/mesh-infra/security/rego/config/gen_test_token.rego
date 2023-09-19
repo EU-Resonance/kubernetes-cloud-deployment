@@ -13,9 +13,7 @@
 
 package config
 
-
 import data.config.rsa_key_pair_jwk as jwk
-
 
 tasty_token = t {
     header = {

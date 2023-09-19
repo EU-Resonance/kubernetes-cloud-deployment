@@ -3,4 +3,4 @@ kind: Kustomization
 
 resources:
 - custom-urls.yaml
-
+#leave this empty to test deployment as MVP

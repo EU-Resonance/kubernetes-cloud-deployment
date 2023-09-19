@@ -1,9 +1,3 @@
-#
-# See:
-# - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak/
-# - argocd-rbac-cm.yaml
-# - argocd-secret.yaml
-#
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,13 +7,13 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   url: https://cloud.ouludatalab.fi/argocd
-  oidc.config:
+  oidc.config: |
     name: Keycloak
     issuer: https://cloud.ouludatalab.fi/auth/realms/master
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
-    rootCA:
+    rootCA: |
       -----BEGIN CERTIFICATE-----
       MIIHUTCCBTmgAwIBAgIQdeDhvLBrwVIY+YmmXbESDzANBgkqhkiG9w0BAQsFADBp
       MQswCQYDVQQGEwJVUzEOMAwGA1UECAwFVGV4YXMxEDAOBgNVBAcMB0hvdXN0b24x
@@ -62,29 +56,3 @@ data:
       XZxdPLP87xDdRY915qZxisldkCyj1edeXLUsw/7lF15k8pV5cZMDzH4iX7hpfjYV
       ZCN1gBs=
       -----END CERTIFICATE-----
-
-# NOTE
-# 1. Client secret lookup. Argo CD looks up any key starting with `$`
-# in the `argocd-secret` K8s secret.
-# See:
-# - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sso-further-reading
-#
-# 2. Root CA. Argo CD will call the specified issuer to retrieve OIDC
-# config (<issuer>/.well-known/openid-configuration) and exchange grant
-# codes for proper auth tokens. If the issuer field is an HTTPs URL,
-# Argo CD will try validating the server TLS cert. If the server cert
-# was signed by a root or intermediate authority not known to Argo CD,
-# validation will fail. By default, Argo CD looks for the CAs bundled
-# with the Docker image. Unfortunately, recent images don't bundle the
-# SSL.com intermediate authority that signed our Kitt4sme cert, which
-# makes validation fail with this error message
-#
-#   Failed to query provider
-#   "https://kitt4sme.collab-cloud.eu/auth/realms/master":
-#   Get "https://kitt4sme.collab-cloud.eu/auth/realms/master/.well-known/openid-configuration":
-#   x509: certificate signed by unknown authority
-#
-# Luckily, recent Argo CD versions let you add your OIDC provider's
-# cert to the ones Argo CD trusts through the `rootCA` field. In our
-# case this field contains the *.collab-cloud.eu cert, the same as the
-# one we use for the Istio gateway.
