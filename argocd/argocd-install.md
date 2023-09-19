@@ -32,42 +32,7 @@ kubectl get svc argocd-server -n argocd -o=jsonpath='{.spec.ports[0].nodePort}'
 ```
 You can access the ArgoCD web UI by navigating to http://<your-node-ip>:<node-port> in your web browser.
 
-3. Logging in to ArgoCD
-By default, ArgoCD uses the Kubernetes authentication system. To log in, use the credentials of your Kubernetes cluster. Alternatively, you can configure ArgoCD to use other authentication methods if needed.
-
-4. Deploying Applications
-To deploy applications with ArgoCD, create an Application resource that defines your desired state. Here's an example of an Application manifest for deploying a sample application from a Git repository:
-
-```
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: my-app
-  namespace: argocd
-spec:
-  source:
-    repoURL: https://github.com/yourusername/your-app-repo.git
-    targetRevision: HEAD
-    path: .kustomize.yaml
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: default
-```
-Apply this manifest to deploy your application:
-
-```
-kubectl apply -n argocd -f my-app.yaml
-```
-ArgoCD will synchronize the application with the desired state defined in your Git repository.
-
-5. Monitoring and Syncing Applications
-You can monitor the status of your applications and trigger synchronization manually using the ArgoCD web UI or the argocd CLI tool. For example, to manually sync your application, you can run:
-
-```
-argocd app sync my-app
-```
-
-6. Cleaning Up
+3. Cleaning Up
 To uninstall ArgoCD and remove all associated resources, you can use the following commands:
 
 ```
@@ -82,4 +47,4 @@ You have now successfully installed ArgoCD and deployed an application using Git
 Note if you are portforwarding and have issues accessing the user interface try running this command:
 ```
 kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 8080:443
-``
+```
