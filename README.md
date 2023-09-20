@@ -4,7 +4,12 @@ Overview of the repository
 * [Install argocd](./argocd/argocd-install.md)
 
 # Simple Install
-
+Ubuntu 22 LTS comes with new version of iptables firewall which is not supported by MicroK8S/Istio/calico by default (to be verified).
+Legacy version of the iptables need to be selected in order to have firewall routing working
+```bash
+update-alternatives --set iptables /usr/sbin/iptables-legacy
+``` 
+MicroK8s should be then installed:
 ```bash
 $ newgrp microk8s
 $ sudo usermod -a -G microk8s $(whoami)
