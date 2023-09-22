@@ -60,3 +60,22 @@ Then build the cluster
 ```bash
 $ microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
+# Configuration
+## TLS
+To enable TLS first valid certificates are needed. Firts create Certificate Signing Request with OpenSSL
+```bash
+openssl req -new -newkey rsa:2048 -noenc -keyout server.key -out generated.csr
+```
+This creates private key and CSR. It is important to save private key and copy it to /etc/cert (create the folder if necessary). 
+CSR you need to copy-paste to certificate authoritys web site. Certificate provider then needs to validate your authority to host the domain. This can be done via DNS record (IMHO easiest) or via e-mail. For DNS validation you need to create DNS CNAME record as per instructions from certificate provider. 
+Once domain has been validated you can download the public keys. Place them also to /etc/cert folder. Unless fullchain certifcate is provided, you need to create one.
+
+For Sectigo certs (ouludatalab.fi) it would be created like this:
+```bash
+cat /etc/cert/STAR_ouludatalab_fi.crt /etc/cert/SectigoRSADomainValidationSecureServerCA.crt /etc/cert/USERTrustRSAAAACA.crt > /etc/cert/fullchain.crt
+```
+Then certificate needs to be installed on Istio and it happens with this command: 
+```bash
+microk8s kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
+```
+And thats it! You can verify the success by going to https://<server>/argocd and checking that certificate is accepted by the browser.
