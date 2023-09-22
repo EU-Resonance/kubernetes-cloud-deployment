@@ -9,6 +9,9 @@ spec:
     repoURL: https://github.com/Advanced-Dataspaces-VTT/kubernetes-cloud-deployment
     targetRevision: HEAD
     path: deployment/mesh-infra/app
+    sshPrivateKeySecret:
+      name: my-ssh-key-secret
+      key: ssh-privatekey
   destination:
     server: https://kubernetes.default.svc
     namespace: default

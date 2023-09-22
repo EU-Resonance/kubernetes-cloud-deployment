@@ -113,10 +113,9 @@ Add a Deploy Key:
 Click the "Add deploy key" button.
 Give the deploy key a title (for identification purposes).
 Paste the copied public key into the "Key" field.
-Options:
 
-If your repository is private, you can choose to allow write access for the key (though it's not recommended for deploy keys).
-Optionally, you can check "Allow write access" if you want the key to have write access to the repository, but remember that deploy keys are typically used for read-only access.
-Add the Deploy Key:
+Create secret to Kubernetes with the SSH key. Following applies if you operate under root credentials
+```bash
+microk8s kubectl create secret generic my-ssh-key-secret --from-file=ssh-privatekey=/root/.ssh/id_rsa
+```
 
-Click the "Add key" button.

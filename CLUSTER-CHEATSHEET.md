@@ -2,5 +2,5 @@
 Common commands to copy paste:
 ```bash
 microk8s kubectl get pods --all-namespaces
-microk8s kubectl logs <pod>
+microk8s kubectl logs pod/<pod> -n <namespace>
 ```
