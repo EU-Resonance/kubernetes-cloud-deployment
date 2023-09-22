@@ -35,7 +35,7 @@ This command will download and install MicroK8s on your system.
 After installation, you can run the following command to enable the essential add-ons and set up your environment:
 
 ```
-sudo microk8s enable dns dashboard storage
+sudo microk8s enable dns dashboard storage ingress
 ```
 This command enables DNS, the Kubernetes dashboard, and storage services. You can enable additional add-ons as needed by specifying them in the command.
 
