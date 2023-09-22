@@ -40,6 +40,7 @@ sudo microk8s enable dns
 sudo microk8s enable dashboard
 sudo microk8s enable storage
 sudo microk8s enable ingress
+sudo microk8s enable istio
 ```
 This command enables DNS, the Kubernetes dashboard, and storage services. You can enable additional add-ons as needed by specifying them in the command.
 
