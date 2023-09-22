@@ -79,3 +79,9 @@ Then certificate needs to be installed on Istio and it happens with this command
 microk8s kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
 ```
 And thats it! You can verify the success by going to https://<server>/argocd and checking that certificate is accepted by the browser.
+
+Certicates have maximum validity period of 13 months so you need to re-create certificates. For that to happen you need to delete old certificates from Istio:
+```bash
+microk8s kubectl delete -n istio-system secret istio-gw-cert
+```
+Then you need to re install certificates following the same procedure that is outlined above
