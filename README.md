@@ -85,3 +85,38 @@ Certicates have maximum validity period of 13 months so you need to re-create ce
 microk8s kubectl delete -n istio-system secret istio-gw-cert
 ```
 Then you need to re install certificates following the same procedure that is outlined above
+
+## Github repo access
+Copy-paste from ChatGPT
+Generate an SSH Key Pair: If you don't already have an SSH key pair (public and private keys), you'll need to generate one. You can do this using the ssh-keygen command. Open your terminal and run:
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+This command generates an SSH key pair and prompts you to save it in a specific location. By default, they are usually stored in ~/.ssh/.
+
+Copy the Public Key: The public key is what you will add to your GitHub repository. You can view the public key by running:
+
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+Copy the entire content of the public key.
+
+Add the Deploy Key to Your GitHub Repository:
+
+Go to your GitHub repository on the GitHub website.
+Click on the "Settings" tab on the right-hand side.
+In the left sidebar, click on "Deploy keys."
+Add a Deploy Key:
+
+Click the "Add deploy key" button.
+Give the deploy key a title (for identification purposes).
+Paste the copied public key into the "Key" field.
+Options:
+
+If your repository is private, you can choose to allow write access for the key (though it's not recommended for deploy keys).
+Optionally, you can check "Allow write access" if you want the key to have write access to the repository, but remember that deploy keys are typically used for read-only access.
+Add the Deploy Key:
+
+Click the "Add key" button.
