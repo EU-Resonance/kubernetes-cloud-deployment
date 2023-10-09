@@ -13,7 +13,15 @@ spec:
     app: keycloak
 
 ---
-
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-entrypoint
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    exec /opt/jboss/keycloak/bin/kc.sh start "$@"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -68,8 +76,13 @@ spec:
         volumeMounts:
         - name: h2-volume
           mountPath: /opt/jboss/keycloak/standalone/data
+        - name: entrypoint-script
+          mountPath: /usr/local/bin/entrypoint.sh
+          subPath: entrypoint.sh
         command:
-        - kc.sh start-dev
+        - sh
+        - -c
+        - cp /usr/local/bin/entrypoint.sh /opt/jboss/keycloak/bin/kc.sh
       volumes:
       - name: h2-volume
         persistentVolumeClaim:
