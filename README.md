@@ -118,4 +118,42 @@ Create secret to Kubernetes with the SSH key. Following applies if you operate u
 ```bash
 microk8s kubectl create secret generic my-ssh-key-secret --from-file=ssh-privatekey=/root/.ssh/id_rsa
 ```
+# Other stuff
+Sealed secret stuff is causing headache. Here is summary of what I have tried to do to get sealed secrects working
+Bitnami kubeseal command needs to be installed
+```bash
+KUBESEAL_VERSION='' # Set this to, for example, KUBESEAL_VERSION='0.23.0'
+wget "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION:?}/kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz"
+tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+```
+Creating the secrets: 
+```bash
+cd deployment/mesh-infra/security/secrets
+kubeseal -o yaml < templates/keycloak-builtin-admin.yaml > keycloak-builtin-admin.yaml
+kubeseal -o yaml < templates/argocd.yaml > argocd.yaml
+kubeseal -o yaml < templates/oidc-clients.yaml > oidc-clients.yaml
+```
+
+# Starting Over
+Few steps and commandsto start over when things go south
+```bash
+rm ~/.kube/config
+microk8s kubectl delete all --all --all-namespaces
+microk8s stop
+snap remove microk8s
+
+snap install microk8s --classic
+nano /var/snap/microk8s/current/args/kube-apiserver
+# add this line
+# --service-node-port-range=1-65535
+microk8s stop
+microk8s start
+microk8s enable community dns storage istio
+ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
+microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml
+microk8s kubectl label namespace default istio-injection=enabled
+microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+```
+Lighter version of redeployment of the cluster needs to defined...
 
