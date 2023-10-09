@@ -68,6 +68,8 @@ spec:
         volumeMounts:
         - name: h2-volume
           mountPath: /opt/jboss/keycloak/standalone/data
+        command:
+        - /opt/jboss/keycloak/bin/kc.sh start
       volumes:
       - name: h2-volume
         persistentVolumeClaim:
