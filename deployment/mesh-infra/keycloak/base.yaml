@@ -67,9 +67,6 @@ spec:
         volumeMounts:
         - name: h2-volume
           mountPath: /opt/jboss/keycloak/standalone/data
-        - name: entrypoint-script
-          mountPath: /usr/local/bin/entrypoint.sh
-          subPath: entrypoint.sh
         command: [/opt/keycloak/bin/kc.sh start]
       volumes:
       - name: h2-volume
