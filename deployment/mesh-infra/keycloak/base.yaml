@@ -87,4 +87,6 @@ spec:
       - name: h2-volume
         persistentVolumeClaim:
           claimName: keycloak-pvc
-
+      - name: entrypoint-script
+        configMap:
+          name: keycloak-entrypoint
