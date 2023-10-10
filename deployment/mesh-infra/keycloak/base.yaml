@@ -76,7 +76,7 @@ spec:
         - name: h2-volume
           mountPath: /opt/jboss/keycloak/standalone/data
         #command: ["/opt/keycloak/bin/kc.sh", "start-dev"]
-        args: ["start-dev"]
+        args: ["start-dev","--http-relative-path /auth","--auto-build"]
       volumes:
       - name: h2-volume
         persistentVolumeClaim:
