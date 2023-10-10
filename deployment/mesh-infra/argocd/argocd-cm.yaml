@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   url: https://cloud.ouludatalab.fi/argocd
-  #oidc.tls.insecure.skip.verify: "true"
   oidc.config: |
     name: Keycloak
     issuer: https://cloud.ouludatalab.fi/auth/realms/master
