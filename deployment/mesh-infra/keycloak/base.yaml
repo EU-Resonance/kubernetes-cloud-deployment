@@ -57,6 +57,12 @@ spec:
               key: password
         - name: DB_VENDOR
           value: "h2"
+        - name: KC_PROXY
+          value: "edge"
+        - name: KEYCLOAK_HTTP_RELATIVE_PATH
+          value: auth
+        - name: KC_HOSTNAME
+          value: cloud.ouludatalab.fi
         ports:
         - name: http
           containerPort: 8080
