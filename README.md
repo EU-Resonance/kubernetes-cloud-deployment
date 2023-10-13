@@ -11,15 +11,16 @@ update-alternatives --set iptables /usr/sbin/iptables-legacy
 ``` 
 MicroK8s should be then installed:
 ```bash
-$ newgrp microk8s
-$ sudo usermod -a -G microk8s $(whoami)
-$ snap install microk8s --classic
+groupadd microk8s
+newgrp microk8s
+sudo usermod -a -G microk8s $(whoami)
+snap install microk8s --classic
+microk8s start
+microk8s status --wait-ready
+microk8s enable community 
+microk8s enable dns storage istio
 
-$ microk8s status --wait-ready
-
-$ microk8s enable community dns storage istio
-
-$ microk8s status
+microk8s status
 ```
 Now we've got to [broaden MicroK8s node port range][mk8s.port-range].
 This is to make sure it'll be able to expose any K8s node port we're
@@ -156,4 +157,33 @@ microk8s kubectl label namespace default istio-injection=enabled
 microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
 Lighter version of redeployment of the cluster needs to defined...
+
+# Keycloak Configuration
+Keycloak client id need to be configured to enable ArgoCD Single Sign On with Keycloak. Here are example steps to enable 
+Keycloak login:
+1. Login to Keycloak admin interface (e.g. https://<server>/auth)
+2. Create client for Argocd on master realm in Clients tab:
+    - General Settings: "Client type" -> OpenID Connect, "Client ID" -> argocd, "Name" -> ArgoCD Client, rest as defualt
+    - Capability config: "Client Authentication" -> On, "Authentication Flow" -> check Standard flow and Direct access grants
+    - Login settings: 
+        - "Root URL" -> "https://<server>/argocd" 
+        - "Home URL" -> "/applications"
+        - "Valid redirect URIs" -> "https://<server>/argocd/auth/callback"
+        - "Valid post logout redirect URIs" -> "https://<server>/argocd"
+        - "Web origins" -> "https://<server>"
+3. Base64 encode client secret from "Credentials" -tab under Clients -configuration
+```bash
+echo '<client secret>' | base64
+```
+4. Insert base64 encoded secret to /deployment/mesh-infra/security/secrets/templates/argocd.yaml field oidc.keycloak.clientSecret
+5. Create ArgoCD client secret from template with kubeseal
+```bash
+cd deployment/mesh-infra/security/secrets
+kubeseal -o yaml < templates/argocd.yaml > argocd.yaml
+```
+6. Push modified argocd.yaml to github and sync secrets from argocd UI
+7. Back to Keycloak configs: Create Client Scope. name: groups and save
+8. On the new scope config in Mappers -tab add "Group Membership" -mapper and define Name as "groups" Token Claim Name as "groups" and disable "Full group path"
+9. Add newly created scope to the argocd client from "Clients"->"argocd"->"Client Scopes"->"Add client scope"->select "groups"->Add to "Default"
+10. Create Group "ArgoCDAdmins" and add current admin user to the group
 
