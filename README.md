@@ -9,6 +9,12 @@ Legacy version of the iptables need to be selected in order to have firewall rou
 ```bash
 update-alternatives --set iptables /usr/sbin/iptables-legacy
 ``` 
+Also there seems to be a problem starting calico-node with vanilla Ubuntu 22 that is due to cni-install -continer failing to start. 
+Root cause is still unknown but Ubuntu MicroK8S instructions direct to modify ufw configuration with following commands:
+```bash
+ufw allow in on cni0 && sudo ufw allow out on cni0
+ufw default allow routed
+```
 MicroK8s should be then installed:
 ```bash
 groupadd microk8s
@@ -27,12 +33,12 @@ This is to make sure it'll be able to expose any K8s node port we're
 going to use.
 
 ```bash
-$ nano /var/snap/microk8s/current/args/kube-apiserver
+nano /var/snap/microk8s/current/args/kube-apiserver
 # add this line
 # --service-node-port-range=1-65535
 
-$ microk8s stop
-$ microk8s start
+microk8s stop
+microk8s start
 ```
 
 Since we're going to use vanilla cluster management tools instead of
@@ -40,13 +46,13 @@ MicroK8s wrappers, we've got to link up MicroK8s client config where
 `kubectl` expects it to be:
 
 ```bash
-$ mkdir -p ~/.kube
-$ ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
+mkdir -p ~/.kube
+ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
 ```
 Install Istio profile
 
 ```bash
-$ microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml 
+microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml 
 ```
 
 Platform infra services (e.g. FIWARE) as well as app services (e.g.
@@ -54,12 +60,12 @@ AI) will sit in K8s' `default` namespace, so tell Istio to auto-magically
 add an Envoy sidecar to each service deployed to that namespace
 
 ```bash
-$ microk8s kubectl label namespace default istio-injection=enabled
+microk8s kubectl label namespace default istio-injection=enabled
 ```
 Then build the cluster
 
 ```bash
-$ microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
 # Configuration
 ## TLS
