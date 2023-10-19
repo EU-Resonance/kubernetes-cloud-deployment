@@ -15,6 +15,7 @@ Root cause is still unknown but Ubuntu MicroK8S instructions direct to modify uf
 ufw allow in on cni0 && sudo ufw allow out on cni0
 ufw default allow routed
 ```
+# Installin MicroK8S
 MicroK8s should be then installed:
 ```bash
 groupadd microk8s
@@ -41,6 +42,47 @@ microk8s stop
 microk8s start
 ```
 
+## Calico Trouble
+Calico is a piece-of-I-do-not-want-to-say-what and after reboot it shits itself. This configuration seems to work somehow:
+```bash
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calico-config
+  namespace: kube-system
+data:
+  veth_mtu: "1400"
+  cni_network_config: |
+    {
+      "name": "k8s-pod-network",
+      "cniVersion": "0.3.1",
+      "plugins": [
+        {
+          "type": "calico",
+          "log_level": "info",
+          "log_format": "json",
+          "ipv4": true,
+          "ipv6": true,
+          "nodenameFileOptional": false,
+          "nodename": "k8s-node-name"
+        },
+        {
+          "type": "portmap",
+          "snat": true,
+          "capabilities": {"portMappings": true}
+        }
+      ]
+    }
+```
+save that to yaml file and apply it to the cluster:
+```bash
+microk8s kubectl apply -f calico.yaml
+```
+Then you need to delete the calico-node -pod to restart it
+```bash
+microk8s kubectl delete pod <calico-node-pod> -n kube-system
+```
+## Rest of the Install Procedure
 Since we're going to use vanilla cluster management tools instead of
 MicroK8s wrappers, we've got to link up MicroK8s client config where
 `kubectl` expects it to be:
