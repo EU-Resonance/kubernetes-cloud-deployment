@@ -6,5 +6,25 @@ metadata:
 data:
   # Other Calico configuration options...
   # ...
-  iptablesBackend: "NFT"
-
+  calico_backend: "bird"
+  iptablesBackend: "Legacy"
+  veth_mtu: "1400"
+  cni_network_config: |
+    {
+      "name": "k8s-pod-network",
+      "cniVersion": "0.3.0",
+      "plugins": [
+        {
+          "type": "calico",
+          "log_level": "info",
+          "datastore_type": "kubernetes",
+          "nodename": "k8s-node-name",
+          "mtu": 1500
+        },
+        {
+          "type": "portmap",
+          "snat": true,
+          "capabilities": {"portMappings": true}
+        }
+      ]
+    }
