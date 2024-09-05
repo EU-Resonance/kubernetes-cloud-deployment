@@ -15,7 +15,20 @@ Root cause is still unknown but Ubuntu MicroK8S instructions direct to modify uf
 ufw allow in on cni0 && sudo ufw allow out on cni0
 ufw default allow routed
 ```
-# Installin MicroK8S
+# Installin MicroK8S - simple and new
+1. run restart.sh
+2. make sure that sealed secrects are created OK (if not, Keycloack wont start)
+3. build cluster (you may need to recreate sealed secrect after this step)
+```bash
+microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+```
+4. Then certificate needs to be installed on Istio and it happens with this command:
+```bash
+microk8s kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
+```
+# Installin MicroK8S - old and difficult
+
+
 MicroK8s should be then installed:
 ```bash
 groupadd microk8s
