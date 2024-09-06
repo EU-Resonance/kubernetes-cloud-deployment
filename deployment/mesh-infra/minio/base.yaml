@@ -26,7 +26,7 @@ spec:
     command:
     - /bin/bash
     - -c
-    args: 
+    args:
     - minio server /data --console-address :9090
     volumeMounts:
     - mountPath: /data

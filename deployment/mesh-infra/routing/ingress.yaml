@@ -54,4 +54,16 @@ spec:
         host: argocd-server.argocd.svc.cluster.local
         port:
           number: 80
+  - match:
+    - uri:
+        prefix: /minio/
+    - uri:
+        prefix: /minio
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: minio.minio.svc.cluster.local
+        port:
+          number: 9090
 
