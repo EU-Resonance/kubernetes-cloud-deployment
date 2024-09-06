@@ -9,4 +9,9 @@ spec:
     command:
       - sleep
       - "3600"
-
+  dnsConfig:
+    searches:
+      - "default.svc.cluster.local"  # Cluster's default DNS search domain for internal services
+      - "svc.cluster.local"           # For resolving services across the entire cluster
+      - "cluster.local"
+  dnsPolicy: ClusterFirst

@@ -7,7 +7,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - "*"
+    - "cloud.ouludatalab.fi"
     port:
       name: http
       number: 80
@@ -15,7 +15,7 @@ spec:
     tls:
       httpsRedirect: false
   - hosts:
-    - "*"
+    - "cloud.ouludatalab.fi"
     port:
       number: 443
       name: https
@@ -32,7 +32,7 @@ spec:
   gateways:
   - "cloud-gateway"
   hosts:
-  - "*"
+  - "cloud.ouludatalab.fi"
   http:
   - match:  # NOTE (2)
     - uri:
@@ -55,20 +55,3 @@ spec:
         port:
           number: 80
 
-# NOTE
-# 1. URL rewriting. We use overlapping prefixes to make sure `/x`, `/x/`
-# and `/x/p` get rewritten to `/`, `/` and `/p` respectively. Istio will
-# moan about it, e.g.
-#
-#   Warning: virtualService rule #3 match #0 of prefix /argocd/ is not used
-#           (duplicate/overlapping match in rule #1 of prefix /argocd on #3)
-#
-# But if you take out either URI prefix match, things will break---e.g.
-# try navigating to the Argo CD UI.
-# See:
-# - https://github.com/istio/istio/issues/8076
-#
-# 2. Keycloak base path. Keycloak is configured with a `web-context`
-# of `auth`, which makes every URL in the UI is relative to `/auth`.
-# So we don't need a rewrite rule in this case.
-#

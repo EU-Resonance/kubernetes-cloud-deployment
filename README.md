@@ -197,27 +197,36 @@ kubeseal -o yaml < templates/argocd.yaml > argocd.yaml
 kubeseal -o yaml < templates/oidc-clients.yaml > oidc-clients.yaml
 ```
 
-# Starting Over
-Few steps and commandsto start over when things go south
-```bash
-rm ~/.kube/config
-microk8s kubectl delete all --all --all-namespaces
-microk8s stop
-snap remove microk8s
+# Various Notes about solved problems
+Once upon a time it happened that ArgoCD was giving an error about TLS client name not mathing when trying to use Keycloak for SSO. Problem also manifested in ArgoCD application 
+view as an error of github.com certificate giving wrong name as cloudfire.com or what ever.
 
-snap install microk8s --classic
-nano /var/snap/microk8s/current/args/kube-apiserver
-# add this line
-# --service-node-port-range=1-65535
-microk8s stop
-microk8s start
-microk8s enable community dns storage istio
-ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
-microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml
-microk8s kubectl label namespace default istio-injection=enabled
-microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+Root cause of this problem tuned out to be wrong or incompatible networkmanager configuration in the host system. This root cause was spotted by using nslookup on depug pod which gave 
+wring address for github.com, but a right one for github.com. (note the last dot). /etc/resolv.conf had "network" as the last entry on the first line. When manually removed the nsloopup 
+started working as expected.
+
+Now resolv.conf is automatically generated configuration file and Ubuntu host system uses NetworkManager which creates this file. This offending "network entry" was also visible by using this command:
+````
+$: resolvectl status
+
+Global
+         Protocols: -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+  resolv.conf mode: stub
+Current DNS Server: 8.8.8.8
+       DNS Servers: 8.8.8.8
+
+Link 2 (enp1s0)
+    Current Scopes: DNS
+         Protocols: +DefaultRoute +LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+Current DNS Server: 130.188.160.137
+       DNS Servers: 8.8.8.8 8.8.4.4 130.188.160.137
+        DNS Domain: network
+````
+Notice that last DNS Domain definition. To get rid of this properly requires to remove that Link 2 definition like so:
 ```
-Lighter version of redeployment of the cluster needs to defined...
+resolvectl revert enp1s0
+```
+And just like that it starts working
 
 # Keycloak Configuration
 Keycloak client id need to be configured to enable ArgoCD Single Sign On with Keycloak. Here are example steps to enable 
