@@ -1,6 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
+namespace: minio
+commonAnnotations:
+  operator.min.io/authors: "MinIO, Inc."
+  operator.min.io/license: "AGPLv3"
+  operator.min.io/support: "https://subnet.min.io"
+  operator.min.io/version: v6.0.3
+commonLabels:
+  app.kubernetes.io/name: operator
 resources:
+- namespace.yaml
 - base.yaml
-
+- cluster-role-binding.yaml
+- cluster-role.yaml
+- service-account.yaml
+- service.yaml
