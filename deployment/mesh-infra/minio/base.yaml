@@ -6,35 +6,62 @@ metadata:
   labels:
     name: minio # Change this value to match metadata.name
 ---
-# Deploys a new MinIO Pod into the metadata.namespace Kubernetes namespace
-#
-# The `spec.containers[0].args` contains the command run on the pod
-# The `/data` directory corresponds to the `spec.containers[0].volumeMounts[0].mountPath`
-# That mount path corresponds to a Kubernetes HostPath which binds `/data` to a local drive or volume on the worker node where the pod runs
-# 
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
+  name: minio-operator
+  namespace: minio
   labels:
-    app: minio
-  name: minio
-  namespace: minio # Change this value to match the namespace metadata.name
+    app.kubernetes.io/instance: minio-operator
+    app.kubernetes.io/name: operator
 spec:
-  containers:
-  - name: minio
-    image: quay.io/minio/minio:latest
-    command:
-    - /bin/bash
-    - -c
-    args:
-    - minio server /data --console-address :9090
-    volumeMounts:
-    - mountPath: /data
-      name: localvolume # Corresponds to the `spec.volumes` Persistent Volume
-  nodeSelector:
-    kubernetes.io/hostname: kubealpha.local # Specify a node label associated to the Worker Node on which you want to deploy the pod.
-  volumes:
-  - name: localvolume
-    hostPath: # MinIO generally recommends using locally-attached volumes
-      path: /var/data/minio # Specify a path to a local drive or volume on the Kubernetes worker node
-      type: DirectoryOrCreate # The path to the last directory must exist
+  replicas: 2
+  selector:
+    matchLabels:
+      name: minio-operator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: minio-operator
+        app.kubernetes.io/instance: minio-operator
+        app.kubernetes.io/name: operator
+    spec:
+      serviceAccountName: minio-operator
+      containers:
+        - name: minio-operator
+          image: minio/operator:v6.0.3
+          imagePullPolicy: IfNotPresent
+          args:
+            - controller
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+              ephemeral-storage: 500Mi
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: MINIO_CONSOLE_TLS_ENABLE
+              value: "off"
+            - name: OPERATOR_STS_ENABLED
+              value: "on"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                      - minio-operator
+              topologyKey: kubernetes.io/hostname
