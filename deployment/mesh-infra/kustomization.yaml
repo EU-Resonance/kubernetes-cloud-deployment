@@ -7,4 +7,5 @@ resources:
 - routing/
 - security/
 - storage/
+- minio/
 #- loadbalancer/
