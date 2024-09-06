@@ -9,6 +9,7 @@ commonAnnotations:
 commonLabels:
   app.kubernetes.io/name: operator
 resources:
+- crds/
 - namespace.yaml
 - base.yaml
 - cluster-role-binding.yaml
