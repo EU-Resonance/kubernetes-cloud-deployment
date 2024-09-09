@@ -56,6 +56,18 @@ spec:
           number: 443
   - match:
     - uri:
+        prefix: /prometheus-pg/
+    - uri:
+        prefix: /prometheus-pg
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: pushgateway.istio-system.svc.cluster.local
+        port:
+          number: 9091
+  - match:
+    - uri:
         prefix: /minio/
     - uri:
         prefix: /minio
