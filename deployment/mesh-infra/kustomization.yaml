@@ -8,4 +8,6 @@ resources:
 - security/
 - storage/
 - minio/
+- prometheus/
+- grafana/
 #- loadbalancer/
