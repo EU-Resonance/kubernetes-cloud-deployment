@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pushgateway
-  namespace: monitoring
+  namespace: istio-system
 spec:
   replicas: 1
   selector:
