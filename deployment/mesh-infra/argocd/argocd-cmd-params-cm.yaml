@@ -17,7 +17,7 @@ data:
   server.insecure: "true"
 
   # Disable client authentication
-  server.disable.auth: "true"
+  server.disable.auth: "false"
 
   # Set the log level to one of: debug|info|warn|error.
   server.log.level: "debug"
