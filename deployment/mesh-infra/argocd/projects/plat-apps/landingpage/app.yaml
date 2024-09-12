@@ -4,4 +4,6 @@
 - op: replace
   path: /spec/source/path
   value: deployment/plat-apps/landingpage
-
+- op: replace
+  path: /spec/project
+  value: plat-apps
