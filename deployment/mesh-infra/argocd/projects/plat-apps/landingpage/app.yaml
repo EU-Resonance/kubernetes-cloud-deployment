@@ -1,0 +1,7 @@
+- op: replace
+  path: /metadata/name
+  value: landingpage
+- op: replace
+  path: /spec/source/path
+  value: deployment/plat-apps/landingpage
+

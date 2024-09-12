@@ -3,7 +3,7 @@ Overview of the repository
 * [Installation of microk8s](./microk8s/microk8s-install.md)
 * [Install argocd](./argocd/argocd-install.md)
 
-# Simple Install
+# System preparation
 Ubuntu 22 LTS comes with new version of iptables firewall which is not supported by MicroK8S/Istio/calico by default (to be verified).
 Legacy version of the iptables need to be selected in order to have firewall routing working
 ```bash
@@ -26,105 +26,19 @@ microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mes
 ```bash
 microk8s kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
 ```
-# Installin MicroK8S - old and difficult
 
-
-MicroK8s should be then installed:
-```bash
-groupadd microk8s
-newgrp microk8s
-sudo usermod -a -G microk8s $(whoami)
-snap install microk8s --classic
-microk8s start
-microk8s status --wait-ready
-microk8s enable community 
-microk8s enable dns storage istio
-
-microk8s status
-```
-Now we've got to [broaden MicroK8s node port range][mk8s.port-range].
-This is to make sure it'll be able to expose any K8s node port we're
-going to use.
-
-```bash
-nano /var/snap/microk8s/current/args/kube-apiserver
-# add this line
-# --service-node-port-range=1-65535
-
-microk8s stop
-microk8s start
-```
-
-## Calico Trouble
-Calico is a piece-of-I-do-not-want-to-say-what and after reboot it shits itself. This configuration seems to work somehow:
-```bash
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: calico-config
-  namespace: kube-system
-data:
-  veth_mtu: "1400"
-  cni_network_config: |
-    {
-      "name": "k8s-pod-network",
-      "cniVersion": "0.3.1",
-      "plugins": [
-        {
-          "type": "calico",
-          "log_level": "info",
-          "log_format": "json",
-          "ipv4": true,
-          "ipv6": true,
-          "nodenameFileOptional": false,
-          "nodename": "k8s-node-name"
-        },
-        {
-          "type": "portmap",
-          "snat": true,
-          "capabilities": {"portMappings": true}
-        }
-      ]
-    }
-```
-save that to yaml file and apply it to the cluster:
-```bash
-microk8s kubectl apply -f calico.yaml
-```
-Then you need to delete the calico-node -pod to restart it
-```bash
-microk8s kubectl delete pod <calico-node-pod> -n kube-system
-```
 ## Rest of the Install Procedure
-Since we're going to use vanilla cluster management tools instead of
-MicroK8s wrappers, we've got to link up MicroK8s client config where
-`kubectl` expects it to be:
 
-```bash
-mkdir -p ~/.kube
-ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
-```
-Install Istio profile
-
-```bash
-microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml 
-```
-
-Platform infra services (e.g. FIWARE) as well as app services (e.g.
-AI) will sit in K8s' `default` namespace, so tell Istio to auto-magically
-add an Envoy sidecar to each service deployed to that namespace
-
-```bash
-microk8s kubectl label namespace default istio-injection=enabled
-```
-Then build the cluster
-
+In case cluster build did not got everything right, wait a minute and try again with this command:
 ```bash
 microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
+It can happen that some services and pods are not started fast enough and rest of the process may suffer from it. Trying a gain should fix any
+unsuccessful component install
+
 # Configuration
 ## TLS
-To enable TLS first valid certificates are needed. Firts create Certificate Signing Request with OpenSSL
+If you do not already have valid TLS certificates, do this. To enable TLS first valid certificates are needed. Firts create Certificate Signing Request with OpenSSL
 ```bash
 openssl req -new -newkey rsa:2048 -noenc -keyout server.key -out generated.csr
 ```
@@ -189,7 +103,7 @@ wget "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESE
 tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
-Creating the secrets: 
+When you modify secrets templates you need to create them again and apply them them. Creating the secrets: 
 ```bash
 cd deployment/mesh-infra/security/secrets
 kubeseal -o yaml < templates/keycloak-builtin-admin.yaml > keycloak-builtin-admin.yaml
@@ -229,6 +143,9 @@ resolvectl revert enp1s0
 And just like that it starts working
 
 # Keycloak Configuration
+Note that Keycloak clients are available as JSON structures in "keycloak-clients" -directory. You can import these but you need to do 
+other modifications like groups, client scopes, etc. by hand.
+
 Keycloak client id need to be configured to enable ArgoCD Single Sign On with Keycloak. Here are example steps to enable 
 Keycloak login:
 1. Login to Keycloak admin interface (e.g. https://<server>/auth)
