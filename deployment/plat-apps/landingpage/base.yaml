@@ -33,7 +33,7 @@ spec:
         app: landingpage
     spec:
       containers:
-        - image: "karikolehmainen/dsil-landing:0.3.0"
+        - image: "karikolehmainen/dsil-landing:0.3.1"
           imagePullPolicy: Always
           name: landingpage
           ports:
