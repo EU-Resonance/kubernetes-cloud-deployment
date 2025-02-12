@@ -27,7 +27,11 @@ ln -s /var/snap/microk8s/current/credentials/client.config ~/.kube/config
 microk8s istioctl install -y --verify -f deployment/mesh-infra/istio/profile.yaml
 microk8s kubectl label namespace default istio-injection=enabled
 
-
+#
+# Build cluster
+#
+microk8s.kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+microk8s.kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
 #
 # Create sealed secrets from templates
 #
@@ -38,3 +42,4 @@ kubeseal -o yaml < templates/oidc-clients.yaml > oidc-clients.yaml
 cd ../../../../
 
 microk8s.kubectl get secrets --all-namespaces
+

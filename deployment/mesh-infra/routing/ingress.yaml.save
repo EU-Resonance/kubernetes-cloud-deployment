@@ -1,0 +1,114 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: "cloud-gateway"
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "cloud.ouludatalab.fi"
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - "cloud.ouludatalab.fi"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: istio-gw-cert
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: "cloud-virtual-service"
+spec:
+  gateways:
+  - "cloud-gateway"
+  hosts:
+  - "cloud.ouludatalab.fi"
+  http:
+  - match:  # NOTE (2)
+    - uri:
+        prefix: /auth
+    route:
+    - destination:
+        host: keycloak.default.svc.cluster.local
+        port:
+          number: 8080
+  - match:  # NOTE (1)
+    - uri:
+        prefix: /argocd/
+    - uri:
+        prefix: /argocd
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: argocd-server.argocd.svc.cluster.local
+        port:
+          number: 443
+  - match:
+    - uri:
+        prefix: /prometheus-pg/
+    - uri:
+        prefix: /prometheus-pg
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: pushgateway.istio-system.svc.cluster.local
+        port:
+          number: 9091
+  - match:
+    - uri:
+        prefix: /minio/
+    - uri:
+        prefix: /minio
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: minio.minio.svc.cluster.local
+        port:
+          number: 9090
+  - match:
+    - uri:
+        prefix: /grafana/
+    - uri:
+        prefix: /grafana
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: grafana.istio-system.svc.cluster.local
+        port:
+          number: 3000
+  - match:
+    - authority:
+        exact: "example-ds.cloud.ouludatalab.fi"
+      uri:
+        prefix: /daps/
+  route:
+    - destination:
+        host: daps.example-ds.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /
+    - uri:
+        prefix: /
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: landingpage.default.svc.cluster.local
+        port:
+          number: 80

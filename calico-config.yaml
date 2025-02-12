@@ -1,0 +1,40 @@
+apiVersion: v1
+data:
+  calico_backend: bird
+  cni_network_config: |
+    {
+      "name": "k8s-pod-network",
+      "cniVersion": "0.3.0",
+      "plugins": [
+        {
+          "type": "calico",
+          "log_level": "info",
+          "datastore_type": "kubernetes",
+          "nodename": "__KUBERNETES_NODE_NAME__",
+          "mtu": 1500,
+          "ipam": {
+            "type": "calico-ipam"
+          },
+          "policy": {
+            "type": "k8s"
+          },
+          "kubernetes": {
+            "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+          }
+        },
+        {
+          "type": "portmap",
+          "snat": true,
+          "capabilities": {"portMappings": true}
+        }
+      ]
+    }
+  iptablesBackend: Legacy
+  veth_mtu: "1400"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: routing
+  name: calico-config
+  namespace: kube-system
+

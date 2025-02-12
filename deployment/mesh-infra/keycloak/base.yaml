@@ -63,6 +63,8 @@ spec:
           value: /auth
         - name: KC_HOSTNAME
           value: cloud.ouludatalab.fi
+        - name: KEYCLOAK_HOSTNAME_STRICT
+          value: "false"
         ports:
         - name: http
           containerPort: 8080

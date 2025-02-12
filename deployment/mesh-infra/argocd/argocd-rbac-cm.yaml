@@ -6,9 +6,11 @@ metadata:
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
 data:
-  policy.csv:
+  policy.csv: |
     g, ArgoCDAdmins, role:admin
-
+    p, role:unauthenticated, applications, *, *, deny
+  policy.default: role:admin
+  scopes: '[groups, email]'
 # NOTE
 # 1. Keycloak SSO. The above policy gives admin access to Argo CD to any
 # any user in the Keycloak ArgoCDAdmins group.

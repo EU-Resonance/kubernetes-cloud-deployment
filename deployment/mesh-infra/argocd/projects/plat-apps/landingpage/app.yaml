@@ -6,4 +6,4 @@
   value: deployment/plat-apps/landingpage
 - op: replace
   path: /spec/project
-  value: plat-apps
+  value: plat-apps  

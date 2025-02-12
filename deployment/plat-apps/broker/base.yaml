@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: landingpage
-  name: landingpage
+    app: broker
+  name: broker
 spec:
   ports:
   - name: http
@@ -11,7 +11,7 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    app: landingpage
+    app: broker
 
 ---
 
@@ -19,21 +19,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: landingpage
-  name: landingpage
+    app: broker
+  name: broker
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: landingpage
+      app: broker
   template:
     metadata:
       labels:
-        app: landingpage
+        app: broker
     spec:
       containers:
-        - image: "karikolehmainen/dsil-landing:0.3.2"
+        - image: "karikolehmainen/dsil-broker:0.1"
           imagePullPolicy: Always
           name: landingpage
           ports:
