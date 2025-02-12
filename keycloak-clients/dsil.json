@@ -1,0 +1,63 @@
+{
+  "clientId": "dsil",
+  "name": "dsil-admin",
+  "description": "",
+  "rootUrl": "https://cloud.ouludatalab.fi/",
+  "adminUrl": "https://cloud.ouludatalab.fi/",
+  "baseUrl": "https://cloud.ouludatalab.fi/",
+  "surrogateAuthRequired": false,
+  "enabled": true,
+  "alwaysDisplayInConsole": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "IRwfuJZlr3UOYf4jRPuZgU5FZwtP46JH",
+  "redirectUris": [
+    "https://cloud.ouludatalab.fi/*"
+  ],
+  "webOrigins": [
+    "https://cloud.ouludatalab.fi/"
+  ],
+  "notBefore": 0,
+  "bearerOnly": false,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": true,
+  "serviceAccountsEnabled": false,
+  "publicClient": true,
+  "frontchannelLogout": true,
+  "protocol": "openid-connect",
+  "attributes": {
+    "oidc.ciba.grant.enabled": false,
+    "client.secret.creation.time": "1739370263",
+    "backchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "https://cloud.ouludatalab.fi/*",
+    "oauth2.device.authorization.grant.enabled": "false",
+    "backchannel.logout.revoke.offline.tokens": "false",
+    "login_theme": "",
+    "display.on.consent.screen": false,
+    "frontchannel.logout.url": "",
+    "backchannel.logout.url": ""
+  },
+  "authenticationFlowBindingOverrides": {},
+  "fullScopeAllowed": true,
+  "nodeReRegistrationTimeout": -1,
+  "defaultClientScopes": [
+    "web-origins",
+    "acr",
+    "roles",
+    "profile",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "microprofile-jwt"
+  ],
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  },
+  "authorizationServicesEnabled": false
+}
