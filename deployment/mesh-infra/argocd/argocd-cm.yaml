@@ -6,11 +6,11 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  url: https://cloud.ouludatalab.fi/argocd
+  url: https://resonance.collab-cloud.eu/argocd
   users.anonymous.enabled: "false"
   oidc.config: |
     name: Keycloak
-    issuer: https://cloud.ouludatalab.fi/auth/realms/master
+    issuer: https://resonance.collab-cloud.eu/auth/realms/master
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]

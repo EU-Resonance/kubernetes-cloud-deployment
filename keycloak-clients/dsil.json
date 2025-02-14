@@ -2,19 +2,19 @@
   "clientId": "dsil",
   "name": "dsil-admin",
   "description": "",
-  "rootUrl": "https://cloud.ouludatalab.fi/",
-  "adminUrl": "https://cloud.ouludatalab.fi/",
-  "baseUrl": "https://cloud.ouludatalab.fi/",
+  "rootUrl": "https://resonance.collab-cloud.eu/",
+  "adminUrl": "https://resonance.collab-cloud.eu/",
+  "baseUrl": "https://resonance.collab-cloud.eu/",
   "surrogateAuthRequired": false,
   "enabled": true,
   "alwaysDisplayInConsole": false,
   "clientAuthenticatorType": "client-secret",
   "secret": "IRwfuJZlr3UOYf4jRPuZgU5FZwtP46JH",
   "redirectUris": [
-    "https://cloud.ouludatalab.fi/*"
+    "https://resonance.collab-cloud.eu/*"
   ],
   "webOrigins": [
-    "https://cloud.ouludatalab.fi/"
+    "https://resonance.collab-cloud.eu/"
   ],
   "notBefore": 0,
   "bearerOnly": false,
@@ -30,7 +30,7 @@
     "oidc.ciba.grant.enabled": false,
     "client.secret.creation.time": "1739370263",
     "backchannel.logout.session.required": "true",
-    "post.logout.redirect.uris": "https://cloud.ouludatalab.fi/*",
+    "post.logout.redirect.uris": "https://resonance.collab-cloud.eu/*",
     "oauth2.device.authorization.grant.enabled": "false",
     "backchannel.logout.revoke.offline.tokens": "false",
     "login_theme": "",

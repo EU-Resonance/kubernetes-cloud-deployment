@@ -62,7 +62,7 @@ spec:
         - name: KEYCLOAK_HTTP_RELATIVE_PATH
           value: /auth
         - name: KC_HOSTNAME
-          value: cloud.ouludatalab.fi
+          value: resonance.collab-cloud.eu
         - name: KEYCLOAK_HOSTNAME_STRICT
           value: "false"
         ports:

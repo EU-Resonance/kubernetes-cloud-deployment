@@ -2,19 +2,19 @@
   "clientId": "grafana",
   "name": "grafana",
   "description": "",
-  "rootUrl": "https://cloud.ouludatalab.fi/grafana",
+  "rootUrl": "https://resonance.collab-cloud.eu/grafana",
   "adminUrl": "",
-  "baseUrl": "https://cloud.ouludatalab.fi/grafana",
+  "baseUrl": "https://resonance.collab-cloud.eu/grafana",
   "surrogateAuthRequired": false,
   "enabled": true,
   "alwaysDisplayInConsole": false,
   "clientAuthenticatorType": "client-secret",
   "secret": "BQftuYsXcc9BTqZRFTyZqPQsn7IlcsNO",
   "redirectUris": [
-    "https://cloud.ouludatalab.fi/grafana/login/generic_oauth"
+    "https://resonance.collab-cloud.eu/grafana/login/generic_oauth"
   ],
   "webOrigins": [
-    "https://cloud.ouludatalab.fi/grafana"
+    "https://resonance.collab-cloud.eu/grafana"
   ],
   "notBefore": 0,
   "bearerOnly": false,
@@ -30,7 +30,7 @@
     "oidc.ciba.grant.enabled": "false",
     "client.secret.creation.time": "1725880905",
     "backchannel.logout.session.required": "true",
-    "post.logout.redirect.uris": "https://cloud.ouludatalab.fi/grafana",
+    "post.logout.redirect.uris": "https://resonance.collab-cloud.eu/grafana",
     "oauth2.device.authorization.grant.enabled": "false",
     "display.on.consent.screen": "false",
     "backchannel.logout.revoke.offline.tokens": "false"

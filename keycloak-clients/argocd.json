@@ -2,8 +2,8 @@
   "clientId": "argocd",
   "name": "ArgoCD Client",
   "description": "",
-  "rootUrl": "https://cloud.ouludatalab.fi/argocd",
-  "adminUrl": "https://cloud.ouludatalab.fi/argocd",
+  "rootUrl": "https://resonance.collab-cloud.eu/argocd",
+  "adminUrl": "https://resonance.collab-cloud.eu/argocd",
   "baseUrl": "/applications",
   "surrogateAuthRequired": false,
   "enabled": true,
@@ -11,10 +11,10 @@
   "clientAuthenticatorType": "client-secret",
   "secret": "QEETnZhuAMLs9DYal4BM8v9PhGP62MMP",
   "redirectUris": [
-    "https://cloud.ouludatalab.fi/argocd/auth/callback"
+    "https://resonance.collab-cloud.eu/argocd/auth/callback"
   ],
   "webOrigins": [
-    "https://cloud.ouludatalab.fi"
+    "https://resonance.collab-cloud.eu"
   ],
   "notBefore": 0,
   "bearerOnly": false,
@@ -30,7 +30,7 @@
     "oidc.ciba.grant.enabled": "false",
     "client.secret.creation.time": "1725611221",
     "backchannel.logout.session.required": "true",
-    "post.logout.redirect.uris": "https://cloud.ouludatalab.fi/argocd",
+    "post.logout.redirect.uris": "https://resonance.collab-cloud.eu/argocd",
     "oauth2.device.authorization.grant.enabled": "false",
     "backchannel.logout.revoke.offline.tokens": "false"
   },

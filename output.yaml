@@ -18880,7 +18880,7 @@ data:
   oidc.config:
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
-    issuer: https://cloud.ouludatalab.fi/auth/realms/master
+    issuer: https://resonance.collab-cloud.eu/auth/realms/master
     name: Keycloak
     requestedScopes:
     - openid
@@ -18908,7 +18908,7 @@ data:
       R4xYW0HPjK2tSo30nvCTa6CpSBEDNcn2g9mQYUblfl7MylxJHyBCFchyABWqWmUZ oPDdRDxvikyrBtApxHNfB16n/3btPLW4UhQM1zXZ8xoGs7NDh00prtwBPxv0asTU
       ERJQ+KWo2WUs6NJYF5Ls1SXMxVqjV2AgSrU+mej8ImNGfR3kJk4xcidMC+gSCFSN XZxdPLP87xDdRY915qZxisldkCyj1edeXLUsw/7lF15k8pV5cZMDzH4iX7hpfjYV
       ZCN1gBs= -----END CERTIFICATE-----'
-  url: https://cloud.ouludatalab.fi/argocd
+  url: https://resonance.collab-cloud.eu/argocd
 kind: ConfigMap
 metadata:
   labels:

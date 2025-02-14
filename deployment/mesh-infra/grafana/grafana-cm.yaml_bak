@@ -47,7 +47,7 @@ data:
       url: http://loki:3100
   grafana.ini: |
     [server]
-;    root_url = https://cloud.ouludatalab.fi/grafana/
+;    root_url = https://resonance.collab-cloud.eu/grafana/
     root_url = grafana/
     serve_from_sub_path = false
     [analytics]
@@ -64,7 +64,7 @@ data:
     provisioning = /etc/grafana/provisioning
     [auth.generic_oauth]
     enabled = true
-;    root_url = https://cloud.ouludatalab.fi/grafana/
+;    root_url = https://resonance.collab-cloud.eu/grafana/
     root_url = grafana/
     log.level = debug
     name = Keycloak-OAuth
@@ -75,8 +75,8 @@ data:
     email_attribute_path = email
     login_attribute_path = username
     name_attribute_path = full_name
-    auth_url = https://cloud.ouludatalab.fi/auth/realms/master/protocol/openid-connect/auth
-    token_url = https://cloud.ouludatalab.fi/auth/realms/master/protocol/openid-connect/token
-    api_url = https://cloud.ouludatalab.fi/auth/realms/master/protocol/openid-connect/userinfo
+    auth_url = https://resonance.collab-cloud.eu/auth/realms/master/protocol/openid-connect/auth
+    token_url = https://resonance.collab-cloud.eu/auth/realms/master/protocol/openid-connect/token
+    api_url = https://resonance.collab-cloud.eu/auth/realms/master/protocol/openid-connect/userinfo
     role_attribute_path = realm_access.roles
 ;    role_attribute_path = contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
