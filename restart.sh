@@ -16,9 +16,10 @@ microk8s stop
 echo "--service-node-port-range=1-65535" >> /var/snap/microk8s/current/args/kube-apiserver
 microk8s start
 microk8s status --wait-ready
-
+microk8s.helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 microk8s.helm repo add bitnami https://charts.bitnami.com/bitnami
 microk8s.helm repo update
+microk8s.helm install sealed-secrets sealed-secrets/sealed-secrets -n kube-system --create-namespace
 #microk8s.helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
 microk8s.kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/master/manifests/crds/kustomization.yaml
 
@@ -30,7 +31,7 @@ microk8s kubectl label namespace default istio-injection=enabled
 #
 # Build cluster
 #
-microk8s.kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+microk8s.kubectl -v=0 kustomize deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 microk8s.kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
 #
 # Create sealed secrets from templates

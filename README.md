@@ -9,7 +9,7 @@ Overview of the repository
 2. make sure that sealed secrects are created OK (if not, Keycloack wont start)
 3. build cluster (you may need to recreate sealed secrect after this step)
 ```bash
-microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+microk8s kubectl -v=0 kustomize deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
 4. Then certificate needs to be installed on Istio and it happens with this command:
 ```bash
@@ -21,7 +21,7 @@ replace certificate and private key paths with the correct ones
 
 In case cluster build did not got everything right, wait a minute and try again with this command:
 ```bash
-microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
+microk8s kubectl -v=0 kustomize deployment/mesh-infra/ | microk8s kubectl -v=0 apply -f -
 ```
 It can happen that some services and pods are not started fast enough and rest of the process may suffer from it. Trying a gain should fix any
 unsuccessful component install
@@ -142,6 +142,13 @@ You can then log into the pod like this:
 ````
 microk8s kubectl exec -it debug-pod -- /bin/bash
 ````
+Debug pod is minimal debian/ubuntu distro so you need to install some tools to make it useful:
+````
+apt update
+apt install dnsutils
+apt install net-tools
+````
+Then you can use tools like nslookup to debug networking problems
 
 
 # Keycloak Configuration
