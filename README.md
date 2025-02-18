@@ -3,19 +3,8 @@ Overview of the repository
 * [Installation of microk8s](./microk8s/microk8s-install.md)
 * [Install argocd](./argocd/argocd-install.md)
 
-# System preparation
-Ubuntu 22 LTS comes with new version of iptables firewall which is not supported by MicroK8S/Istio/calico by default (to be verified).
-Legacy version of the iptables need to be selected in order to have firewall routing working
-```bash
-update-alternatives --set iptables /usr/sbin/iptables-legacy
-``` 
-Also there seems to be a problem starting calico-node with vanilla Ubuntu 22 that is due to cni-install -continer failing to start. 
-Root cause is still unknown but Ubuntu MicroK8S instructions direct to modify ufw configuration with following commands:
-```bash
-ufw allow in on cni0 && sudo ufw allow out on cni0
-ufw default allow routed
-```
-# Installin MicroK8S - simple and new
+# System installation
+
 1. run restart.sh
 2. make sure that sealed secrects are created OK (if not, Keycloack wont start)
 3. build cluster (you may need to recreate sealed secrect after this step)
@@ -26,6 +15,7 @@ microk8s kubectl -v=0 kustomize /root/kubernetes-cloud-deployment/deployment/mes
 ```bash
 microk8s kubectl create -n istio-system secret tls istio-gw-cert --key=/etc/cert/server.key --cert=/etc/cert/fullchain.crt
 ```
+replace certificate and private key paths with the correct ones
 
 ## Rest of the Install Procedure
 
@@ -38,7 +28,8 @@ unsuccessful component install
 
 # Configuration
 ## TLS
-If you do not already have valid TLS certificates, do this. To enable TLS first valid certificates are needed. Firts create Certificate Signing Request with OpenSSL
+If you do not already have valid TLS certificates, do this. To enable TLS first valid certificates are needed. Firts create Certificate Signing Request with OpenSSL. NOTE that you
+can usually generate this on the online service as well. In that case remember to save the CSR and KEY files because you will need those later in life.
 ```bash
 openssl req -new -newkey rsa:2048 -noenc -keyout server.key -out generated.csr
 ```
@@ -63,15 +54,13 @@ microk8s kubectl delete -n istio-system secret istio-gw-cert
 Then you need to re install certificates following the same procedure that is outlined above
 
 ## Github repo access
-Copy-paste from ChatGPT
+
 Generate an SSH Key Pair: If you don't already have an SSH key pair (public and private keys), you'll need to generate one. You can do this using the ssh-keygen command. Open your terminal and run:
 
 ```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
-
 This command generates an SSH key pair and prompts you to save it in a specific location. By default, they are usually stored in ~/.ssh/.
-
 Copy the Public Key: The public key is what you will add to your GitHub repository. You can view the public key by running:
 
 ```bash
@@ -116,7 +105,7 @@ Once upon a time it happened that ArgoCD was giving an error about TLS client na
 view as an error of github.com certificate giving wrong name as cloudfire.com or what ever.
 
 Root cause of this problem tuned out to be wrong or incompatible networkmanager configuration in the host system. This root cause was spotted by using nslookup on depug pod which gave 
-wring address for github.com, but a right one for github.com. (note the last dot). /etc/resolv.conf had "network" as the last entry on the first line. When manually removed the nsloopup 
+wrong address for github.com, but a right one for github.com. (note the last dot). /etc/resolv.conf had "network" as the last entry on the first line. When manually removed the nsloopup 
 started working as expected.
 
 Now resolv.conf is automatically generated configuration file and Ubuntu host system uses NetworkManager which creates this file. This offending "network entry" was also visible by using this command:
@@ -141,6 +130,19 @@ Notice that last DNS Domain definition. To get rid of this properly requires to 
 resolvectl revert enp1s0
 ```
 And just like that it starts working
+
+# Using debug-pod
+
+There is a debug-pod deployement file at the folder deployement. You can install it and it will deploy standard Ubuntu VM pod to test the
+kubernetes system. Installation happens like this:
+````
+microk8s kubectl apply -f deployment/debug-pod.yaml 
+````
+You can then log into the pod like this:
+````
+microk8s kubectl exec -it debug-pod -- /bin/bash
+````
+
 
 # Keycloak Configuration
 Note that Keycloak clients are available as JSON structures in "keycloak-clients" -directory. You can import these but you need to do 
@@ -173,4 +175,8 @@ kubeseal -o yaml < templates/argocd.yaml > argocd.yaml
 8. On the new scope config in Mappers -tab add "Group Membership" -mapper and define Name as "groups" Token Claim Name as "groups" and disable "Full group path"
 9. Add newly created scope to the argocd client from "Clients"->"argocd"->"Client Scopes"->"Add client scope"->select "groups"->Add to "Default"
 10. Create Group "ArgoCDAdmins" and add current admin user to the group
+To restart the argocd server user this command:
+````
+microk8s kubectl rollout restart deployment argocd-server -n argocd
+````
 
