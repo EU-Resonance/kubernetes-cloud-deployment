@@ -131,6 +131,86 @@ resolvectl revert enp1s0
 ```
 And just like that it starts working
 
+### Issues related to deploying cluster on new domain
+You should be mindful with github repo links if you forget to update links you might end up pulling stuff from wrong repos. This is file that you also need to update
+````
+deployment/mesh-infra/argocd/projects/base/app.yaml
+````
+
+
+## Setting Static Nameserver Config on the Host
+This is from ChatGPT:
+### Method 1: Modify /etc/netplan (For newer versions of Ubuntu using Netplan)
+Edit Netplan Configuration:
+
+Open the Netplan configuration file (usually found in /etc/netplan/).
+```
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+Add Static DNS Servers:
+
+In the configuration file, find the section under ethernets (for wired connections) or wifis (for wireless), and add the nameservers directive with your desired DNS servers. Example for a static Ethernet IP configuration:
+````
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens3:
+      dhcp4: true
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+````
+Apply the Configuration:
+
+After saving the file, apply the changes by running:
+```
+sudo netplan apply
+```
+#### Method 2: Modify /etc/resolv.conf (Temporary Change)
+This method is not persistent across reboots, as Ubuntu uses systemd-resolved to manage DNS settings.
+
+Edit /etc/resolv.conf:
+
+````
+sudo nano /etc/resolv.conf
+````
+Set Static DNS:
+
+Add your nameserver line to the file:
+````
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+````
+Save and Exit:
+
+Note: If using systemd-resolved, the changes may not persist after reboot.
+
+### Method 3: Use systemd-resolved (Persistent for systemd)
+Create or Edit a Configuration File: You can configure DNS through systemd-resolved by editing the file /etc/systemd/resolved.conf.
+
+````
+sudo nano /etc/systemd/resolved.conf
+````
+Set DNS Servers:
+
+Under the [Resolve] section, uncomment and set the DNS servers:
+````
+[Resolve]
+DNS=8.8.8.8 8.8.4.4
+FallbackDNS=1.1.1.1
+````
+Restart systemd-resolved: After saving the file, restart the systemd-resolved service:
+````
+sudo systemctl restart systemd-resolved
+````
+Verify the DNS Configuration:
+````
+resolvectl status
+````
+This will set a static DNS server that persists across reboots.
+
 # Using debug-pod
 
 There is a debug-pod deployement file at the folder deployement. You can install it and it will deploy standard Ubuntu VM pod to test the
