@@ -4,6 +4,25 @@ Overview of the repository
 * [Install argocd](./argocd/argocd-install.md)
 
 # System installation
+Pre-requisites for running the cluster is to use legacy iptables (microk8s does seem to have issue with default nft version of iptables). To switch legacy iptables do this:
+````
+sudo update-alternatives --config iptables
+[sudo] password for vmuser: 
+There are 2 choices for the alternative iptables (providing /usr/sbin/iptables).
+
+  Selection    Path                       Priority   Status
+------------------------------------------------------------
+  0            /usr/sbin/iptables-nft      20        auto mode
+* 1            /usr/sbin/iptables-legacy   10        manual mode
+  2            /usr/sbin/iptables-nft      20        manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 1
+````
+You can try not to do this but in case you you do not get kubernetes chains in iptables, you need to change to legacy version and restart the microk8s. Iptables you can list whith this command:
+
+````
+sudo iptables -L -n -v
+````
 
 1. run restart.sh
 2. make sure that sealed secrects are created OK (if not, Keycloack wont start)
