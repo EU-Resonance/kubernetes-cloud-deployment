@@ -6,7 +6,7 @@ metadata:
 spec:
   project: mesh-infra
   source:
-    repoURL: https://github.com/Advanced-Dataspaces-VTT/kubernetes-cloud-deployment
+    repoURL: https://github.com/EU-Resonance/kubernetes-cloud-deployment
     targetRevision: HEAD
     path: deployment/mesh-infra/app
   destination:
